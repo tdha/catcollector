@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .models import Cat 
+from django.views.generic.edit import CreateView
+from .models import Cat
 
 def home(request):
     return render(request, 'home.html')
@@ -18,3 +19,8 @@ def cats_detail(request, cat_id):
     return render(request, 'cats/detail.html', {
         'cat': cat
     })
+
+class CatCreate(CreateView):
+    model = Cat
+    # fields = ['name', 'breed'] # if model changed, will have ot come back here and update
+    fields = '__all__'

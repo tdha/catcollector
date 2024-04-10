@@ -21,10 +21,17 @@ def cats_index(request):
 def cats_detail(request, cat_id):
     cat = Cat.objects.get(id=cat_id)
     feeding_form = FeedingForm()
+    current_toys_ids = cat.toys.all().values_list('id')
+    available_toys = Toy.objects.exclude(id__in=current_toys_ids)
     return render(request, 'cats/detail.html', {
         'cat': cat,
-        'feeding_form': feeding_form
+        'feeding_form': feeding_form,
+        'available_toys': available_toys
     })
+
+def add_toy(request, cat_id, toy_id):
+    Cat.objects.get(id=cat_id).toys.add(toy_id)
+    return redirect('detail', cat_id=cat_id)
 
 def add_feeding(request, cat_id):
     # create a ModelForm instance using the data in the request.POST
@@ -52,25 +59,20 @@ class CatDelete(DeleteView):
 
 # TOY CRUD ###############################################
 
-# List view
 class ToyList(ListView):
     model = Toy
 
-# Detail view
 class ToyDetail(DetailView):
     model = Toy
 
-# Create view
 class ToyCreate(CreateView):
     model = Toy
     fields = '__all__'
 
-# Update view
 class ToyUpdate(UpdateView):
     model = Toy
     fields = '__all__'
 
-# Delete view
 class ToyDelete(DeleteView):
     model = Toy
     success_url = '/toys/'

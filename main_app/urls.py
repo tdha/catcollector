@@ -12,6 +12,7 @@ urlpatterns = [
     path('cats/create/', views.CatCreate.as_view(), name='cats_create'),
     path('cats/<int:pk>/update', views.CatUpdate.as_view(), name='cats_update'), # use pk for class-based views
     path('cats/<int:pk>/delete', views.CatDelete.as_view(), name='cats_delete'),
+    path('cats/<int:cat_id>/add_toy/<int:toy_id>', views.add_toy, name='add_toy'),
 
     path('toys/', views.ToyList.as_view(), name='toys_index'),
     path('toys/<int:pk>/', views.ToyDetail.as_view(), name='toys_detail'),

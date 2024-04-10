@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-# from django.urls import reverse
-from .models import Cat
+
+from .models import Cat, Toy
+
+from .forms import FeedingForm
 
 def home(request):
     return render(request, 'home.html')
@@ -17,13 +20,25 @@ def cats_index(request):
 
 def cats_detail(request, cat_id):
     cat = Cat.objects.get(id=cat_id)
+    feeding_form = FeedingForm()
     return render(request, 'cats/detail.html', {
-        'cat': cat
+        'cat': cat,
+        'feeding_form': feeding_form
     })
+
+def add_feeding(request, cat_id):
+    # create a ModelForm instance using the data in the request.POST
+    form = FeedingForm(request.POST)
+    # validate the form
+    if form.is_valid():
+        # don't save the form to the db until it had the cat_id assigned
+        new_feeding = form.save(commit=False)
+        new_feeding.cat_id = cat_id
+        new_feeding.save()
+    return redirect('detail', cat_id=cat_id)
 
 class CatCreate(CreateView):
     model = Cat
-    # fields = ['name', 'breed'] # if model changed, will have ot come back here and update
     fields = '__all__'
 
 class CatUpdate(UpdateView):
@@ -32,6 +47,30 @@ class CatUpdate(UpdateView):
 
 class CatDelete(DeleteView):
     model = Cat
-    success_url = '/cats'
-    # def get_success_url(self):
-    #     return reverse('cats-list')
+    success_url = '/cats/'
+
+
+# TOY CRUD ###############################################
+
+# List view
+class ToyList(ListView):
+    model = Toy
+
+# Detail view
+class ToyDetail(DetailView):
+    model = Toy
+
+# Create view
+class ToyCreate(CreateView):
+    model = Toy
+    fields = '__all__'
+
+# Update view
+class ToyUpdate(UpdateView):
+    model = Toy
+    fields = '__all__'
+
+# Delete view
+class ToyDelete(DeleteView):
+    model = Toy
+    success_url = '/toys/'

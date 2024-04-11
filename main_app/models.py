@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from datetime import date
 
 MEALS = (
     ('B', 'Breakfast'),
@@ -30,6 +31,10 @@ class Cat(models.Model):
     
     def get_absolute_url(self):
         return reverse('detail', kwargs={ 'cat_id': self.id })
+    
+    def fed_for_today(self):
+        # return self.feeding_set.filter(date=date.today().count()) >= len(MEALS)
+        len( self.feeding_set.filter(date=date.today()) )
 
     def __str__(self):
         return f"{self.name}, {self.age}" # returns a string

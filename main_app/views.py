@@ -33,12 +33,13 @@ def add_toy(request, cat_id, toy_id):
     Cat.objects.get(id=cat_id).toys.add(toy_id)
     return redirect('detail', cat_id=cat_id)
 
+def remove_toy(request, cat_id, toy_id):
+    Cat.objects.get(id=cat_id).toys.remove(toy_id)
+    return redirect('detail', cat_id=cat_id)
+
 def add_feeding(request, cat_id):
-    # create a ModelForm instance using the data in the request.POST
     form = FeedingForm(request.POST)
-    # validate the form
     if form.is_valid():
-        # don't save the form to the db until it had the cat_id assigned
         new_feeding = form.save(commit=False)
         new_feeding.cat_id = cat_id
         new_feeding.save()
@@ -46,7 +47,7 @@ def add_feeding(request, cat_id):
 
 class CatCreate(CreateView):
     model = Cat
-    fields = '__all__'
+    fields = ['name', 'breed', 'description', 'age']
 
 class CatUpdate(UpdateView):
     model = Cat

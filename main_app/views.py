@@ -53,6 +53,10 @@ class CatCreate(CreateView):
     model = Cat
     fields = ['name', 'breed', 'description', 'age']
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user # assigned the logged in user (self.request.user)
+        return super().form_valid(form) # let the CreateView do its job as usual (saving the object and redirecting)
+
 class CatUpdate(UpdateView):
     model = Cat
     fields = ['breed', 'description', 'age']

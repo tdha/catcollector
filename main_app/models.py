@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from datetime import date
+from django.contrib.auth.models import User
 
 MEALS = (
     ('B', 'Breakfast'),
@@ -28,6 +29,7 @@ class Cat(models.Model):
     description = models.TextField(max_length=256)
     age = models.IntegerField()
     toys = models.ManyToManyField(Toy) # label is arbitrary
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # adds user_id FK column
     
     def get_absolute_url(self):
         return reverse('detail', kwargs={ 'cat_id': self.id })
